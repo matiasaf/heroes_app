@@ -1,0 +1,28 @@
+<mat-spinner *ngIf="loading"></mat-spinner>
+
+<mat-card *ngIf="!loading">
+  <mat-card-header>
+    <mat-card-title>
+      <span>Heroe Details:</span>
+    </mat-card-title>
+  </mat-card-header>
+  <form #form="ngForm" (submit)="saveChanges(selectedHeroe)">
+    <mat-card-content>
+      <mat-form-field>
+        <input matInput placeholder="Title" type="text" name="title" required [(ngModel)]="selectedHeroe.name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Description" type="text" name="description"
+          [(ngModel)]="selectedHeroe.description">
+      </mat-form-field>
+      <section>
+        Is your favorite?
+        <mat-checkbox name="favorite" [(ngModel)]="selectedHeroe.favorite"></mat-checkbox>
+      </section>
+    </mat-card-content>
+    <mat-card-actions>
+      <button [disabled]="form.invalid" type="submit" mat-button color="primary">Submit</button>
+      <button type="button" mat-button (click)="cancel(selectedHeroe)">Cancel</button>
+    </mat-card-actions>
+  </form>
+</mat-card>
