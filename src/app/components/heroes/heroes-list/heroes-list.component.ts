@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Heroe } from "src/app/models/heroe";
 import { HeroesService } from "src/app/shared/services/heroes.service";
@@ -25,7 +25,8 @@ export class HeroesListComponent implements OnInit {
   actualSearch = "";
 
   //pagination
-  page = 1;
+  actualPage = 1;
+  pageSize = 5;
   total = 0;
 
   isLoading = true;
@@ -69,12 +70,14 @@ export class HeroesListComponent implements OnInit {
     });
   }
 
-  handlePageEvent(values: any) {
-    if (values.previousPageIndex < values.pageIndex) {
-      this.page++;
+  handlePageEvent(pagination: any) {
+    const { previousPageIndex, pageIndex, pageSize } = pagination;
+    if (previousPageIndex < pageIndex) {
+      this.actualPage++;
     } else {
-      this.page--;
+      this.actualPage--;
     }
+    this.pageSize = pageSize;
     this.getHeroes();
   }
 
@@ -90,7 +93,8 @@ export class HeroesListComponent implements OnInit {
         this.actualSearch = searchValue;
         return this.heroesService.findByNamePaginated(
           searchValue,
-          String(this.page)
+          String(this.actualPage),
+          String(this.pageSize)
         );
       }),
       tap(() => this.getTotalHeroesFiltered(this.actualSearch))

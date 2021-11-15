@@ -1,9 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { Heroe } from "src/app/models/heroe";
-import { LoadingService } from "./loading.service";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -14,20 +13,7 @@ export class HeroesService {
   model = "heroes";
   heroes$ = new BehaviorSubject<Heroe[]>([]);
 
-  constructor(
-    private http: HttpClient,
-    private loadingService: LoadingService
-  ) {}
-
-  all(): Observable<Heroe[]> {
-    return this.http.get<Heroe[]>(this.getUrl());
-  }
-
-  countAll(): Observable<number> {
-    return this.http
-      .get<Heroe[]>(this.getUrl())
-      .pipe(map((heroes) => heroes.length));
-  }
+  constructor(private http: HttpClient) {}
 
   countAllFiltered(filterValue: string): Observable<number> {
     return this.http
@@ -39,9 +25,13 @@ export class HeroesService {
     return this.http.get<Heroe>(this.getUrlById(heroeId));
   }
 
-  findByNamePaginated(heroeName: string, page: string): Observable<Heroe[]> {
+  findByNamePaginated(
+    heroeName: string,
+    page: string,
+    pageSize: string
+  ): Observable<Heroe[]> {
     return this.http.get<Heroe[]>(
-      this.getUrlFilteredByNameAndPaginated(heroeName, page)
+      this.getUrlFilteredByNameAndPaginated(heroeName, page, pageSize)
     );
   }
 
@@ -72,7 +62,11 @@ export class HeroesService {
     return `${BASE_URL}/${this.model}?name_like=${heroeName}`;
   }
 
-  private getUrlFilteredByNameAndPaginated(heroeName: string, page: string) {
-    return `${BASE_URL}/${this.model}?name_like=${heroeName}&_page=${page}&_limit=5`;
+  private getUrlFilteredByNameAndPaginated(
+    heroeName: string,
+    page: string,
+    pageSize: string
+  ) {
+    return `${BASE_URL}/${this.model}?name_like=${heroeName}&_page=${page}&_limit=${pageSize}`;
   }
 }
